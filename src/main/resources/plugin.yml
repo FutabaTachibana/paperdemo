@@ -1,0 +1,36 @@
+name: paperdemo
+version: '1.0-SNAPSHOT'
+main: top.tachibana.paperdemo.Paperdemo
+api-version: '1.21.4'
+description: An example paper plugin
+author: Futaba_Tachibana
+contributors: [PaperMC, SpigotMC, Bukkit]
+prefix: DemoPlugin
+permissions :
+  permission.node:
+    description: "This is a permission node"
+    default: op
+    children:
+      permission.node.child: true
+  another.permission.node:
+    description: "This is another permission node"
+    default: not op
+commands:
+  command:
+    description: "This is a command"
+    usage: "/command <arg>"
+    aliases: [cmd, command]
+    permission: permission.node
+    permission-message: "You do not have permission to use this command"
+  demo:
+    description: "一个示例指令"
+    usage: |
+     实现一个指令，有print, suicide, spawn, msg四个子命令
+     /demo print 打印插件的名字
+     /demo suicide 杀死执行指令的玩家
+     /demo spawn 召唤一头猪
+     /demo msg join 输出\"xxx加入了游戏\"的消息
+     /demo msg leave 输出\"xxx离开了游戏\"的消息
+    permission: permission.node
+    permission-message: "You do not have permission to use this command"
+
