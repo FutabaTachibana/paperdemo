@@ -2,8 +2,7 @@ package top.tachibana.paperdemo;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -19,6 +18,13 @@ import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class PaperdemoListener implements Listener {
+    @EventHandler
+    public void onGamemodeChange(PlayerGameModeChangeEvent event){
+        if(event.getNewGameMode() == GameMode.ADVENTURE){
+            event.setCancelled(true);
+            event.getPlayer().setGameMode(GameMode.SPECTATOR);
+        }
+    }
     @EventHandler
     public void onItemUse(PlayerInteractEvent event){
         if(event.getItem() != null && event.getItem().getType() == Material.STICK){
@@ -113,24 +119,33 @@ public final class PaperdemoListener implements Listener {
     }
     @EventHandler
     public  void onHeld(PlayerItemHeldEvent event){
-        //这段代码文档没有演示过
-//        ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
-//        if(newItem != null && newItem.getType() == Material.PAPER){
-//            Bukkit.broadcast(Component.text("Paper in " + event.getNewSlot()));
-//            callCoolPaperEvent();
-//        }
+        // 用于call我们的自定义事件
+        ItemStack newItem = event.getPlayer().getInventory().getItem(event.getNewSlot());
+        if(newItem != null && newItem.getType() == Material.DIAMOND){
+            callPlayerDiamondHeld(event.getPlayer());
+        }
     }
-//    public void callCoolPaperEvent(){
-        //这段代码文档没有演示过
-//        PaperIsCoolEvent event = new PaperIsCoolEvent(Component.text("Paper is cool!"));
-//        //Event is called
-//        if(event.callEvent()) {
-//            Bukkit.broadcast(event.getMessage());
-//        }
-//        //equals to
+    public void callPlayerDiamondHeld(Player who){
+        PlayerDiamondHeld event = new PlayerDiamondHeld(who);
+        // call事件
+        if(event.callEvent()) {
+            event.getPlayer().sendMessage(Component.text("PlayerDiamondHeld事件被触发", NamedTextColor.YELLOW));
+        }
+        // 与下面的写法等价
 //        event.callEvent();
 //        if(!event.isCancelled()) {
-//            Bukkit.broadcast(event.getMessage());
+//            event.getPlayer().sendMessage(Component.text("PlayerDiamondHeld事件被触发", NamedTextColor.YELLOW));
 //        }
-//    }
+    }
+    // 我们的自定义事件可被监听 也可被取消
+    @EventHandler
+    public void onPlayerDiamondHeld(PlayerDiamondHeld event){
+        ItemStack offHand = event.getPlayer().getInventory().getItemInOffHand();
+        if(offHand.getType() == Material.NETHERITE_INGOT){
+            Player player = event.getPlayer();
+            player.sendMessage(Component.text("拿了钻石还拿下界合金锭？什么好事都让你占了。", NamedTextColor.RED));
+            player.playSound(player, Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 1, 1);
+            event.setCancelled(true);
+        }
+    }
 }
