@@ -13,12 +13,16 @@ public final class Paperdemo extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         instance = this;
-        // register listener
+        // 注册事件监听器
         this.getServer().getPluginManager().registerEvents(new PaperdemoListener(), this);
         this.getCommand("demo").setExecutor(new PaperdemoCommand());
+        this.getCommand("msg").setExecutor(new MsgCommand());
+        this.getCommand("config").setExecutor(new ConfigCommand());
         PaperdemoRecipe.getShapedRecipe().forEach(this.getServer()::addRecipe);
         PaperdemoRecipe.getShapelessRecipe().forEach(this.getServer()::addRecipe);
         PaperdemoRecipe.getBlastingRecipe().forEach(this.getServer()::addRecipe);
+        // 插件配置
+        saveDefaultConfig();
     }
 
     @Override

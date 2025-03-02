@@ -16,12 +16,12 @@ permissions :
     description: "This is another permission node"
     default: not op
 commands:
-  command:
-    description: "This is a command"
-    usage: "/command <arg>"
-    aliases: [cmd, command]
-    permission: permission.node
-    permission-message: "You do not have permission to use this command"
+#  command:
+#    description: "This is a command"
+#    usage: "/command <arg>"
+#    aliases: [cmd, command]
+#    permission: permission.node
+#    permission-message: "You do not have permission to use this command"
   demo:
     description: "一个示例指令"
     usage: |
@@ -33,4 +33,9 @@ commands:
      /demo msg leave 输出\"xxx离开了游戏\"的消息
     permission: permission.node
     permission-message: "You do not have permission to use this command"
+  msg:
+    description: "打印BungeeCord chat API渲染的消息"
+    usage: "/msg"
+  config:
+    description: "打印config的内容"
 
