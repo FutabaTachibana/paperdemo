@@ -1,6 +1,5 @@
 package top.tachibana.paperdemo;
 
-
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -1,6 +1,5 @@
 package top.tachibana.paperdemo;
 
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -30,10 +29,10 @@ public final class Paperdemo extends JavaPlugin {
         PaperdemoRecipe.getShapelessRecipe().forEach(this.getServer()::addRecipe);
         PaperdemoRecipe.getBlastingRecipe().forEach(this.getServer()::addRecipe);
         // 插件配置
-        saveResource("custom.yml", false);
-        saveDefaultConfig();
+        this.saveDefaultConfig();
+        this.saveResource("custom.yml", false);
         // 加载自定义配置
-        File file = new File(Paperdemo.getInstance().getDataFolder(), "custom.yml");
+        File file = new File(this.getDataFolder(), "custom.yml");
         Paperdemo.custom = YamlConfiguration.loadConfiguration(file);
     }
 
@@ -43,7 +42,7 @@ public final class Paperdemo extends JavaPlugin {
     }
 
     public static Paperdemo getInstance(){
-        return instance;
+        return Paperdemo.instance;
     }
 
     public static FileConfiguration getCustom(){
@@ -51,7 +50,7 @@ public final class Paperdemo extends JavaPlugin {
     }
     public static void saveCustom() throws IOException {
         File file = new File(Paperdemo.getInstance().getDataFolder(), "custom.yml");
-        custom.save(file);
+        Paperdemo.custom.save(file);
     }
 }
 
