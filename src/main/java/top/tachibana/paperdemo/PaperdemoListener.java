@@ -3,13 +3,13 @@ package top.tachibana.paperdemo;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -18,6 +18,33 @@ import java.util.Collection;
 import java.util.concurrent.ThreadLocalRandom;
 
 public final class PaperdemoListener implements Listener {
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event){
+        if(event.getClickedInventory() == Paperdemo.getMenu()){
+            Inventory menu = Paperdemo.getMenu();
+            HumanEntity player = event.getWhoClicked();
+            event.setCancelled(true);
+            ItemStack item = menu.getItem(event.getSlot());
+            if(item == null){
+                return;
+            }
+            switch (item.getType()){
+                case GRASS_BLOCK -> player.setGameMode(GameMode.CREATIVE);
+                case IRON_SWORD -> player.setGameMode(GameMode.SURVIVAL);
+                case MAP -> player.setGameMode(GameMode.ADVENTURE);
+                case ENDER_EYE -> player.setGameMode(GameMode.SPECTATOR);
+                case BARRIER -> player.closeInventory();
+            }
+        }
+    }
+    @EventHandler
+    public void onSwapHand(PlayerSwapHandItemsEvent event){
+        HumanEntity player = event.getPlayer();
+        if(player.isSneaking()){
+            event.setCancelled(true);
+            player.openInventory(player.getEnderChest());
+        }
+    }
     @EventHandler
     public void onGamemodeChange(PlayerGameModeChangeEvent event){
         if(event.getNewGameMode() == GameMode.ADVENTURE){
@@ -70,6 +97,12 @@ public final class PaperdemoListener implements Listener {
     }
     @EventHandler
     public void onDropItem(PlayerDropItemEvent event){
+        if(event.getPlayer().isSneaking()){
+            event.setCancelled(true);
+            event.getPlayer().openInventory(Paperdemo.getMenu());
+        }
+
+
         // 当玩家丢出下界合金锭 输出消息并延迟两秒杀死该玩家 随后取消事件
         if(event.getItemDrop().getItemStack().getType() == Material.NETHERITE_INGOT){
 //            new BukkitRunnable(){
